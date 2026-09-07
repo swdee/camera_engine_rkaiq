@@ -220,8 +220,25 @@ XCamReturn AiqCifSclStream_set_format(AiqCifSclStream_t* pCifSclStrm,
         case V4L2_PIX_FMT_SRGGB16:
             pCifSclStrm->_sns_v4l_pix_fmt = V4L2_PIX_FMT_SRGGB16;
             break;
+        case V4L2_PIX_FMT_GREY:
+            pCifSclStrm->_sns_v4l_pix_fmt = V4L2_PIX_FMT_GREY;
+            break;
+        case V4L2_PIX_FMT_Y10:
+            pCifSclStrm->_sns_v4l_pix_fmt = V4L2_PIX_FMT_Y10;
+            break;
+        case V4L2_PIX_FMT_Y12:
+            pCifSclStrm->_sns_v4l_pix_fmt = V4L2_PIX_FMT_Y12;
+            break;
         default:
-            LOGE_CAMHW_SUBM(ISP20HW_SUBM, "unknown format");
+            LOGE_CAMHW_SUBM(
+                ISP20HW_SUBM,
+                "CIF set_format UNKNOWN pixfmt=0x%08x fourcc='%c%c%c%c' bpp=%d",
+                sns_v4l_pix_fmt,
+                sns_v4l_pix_fmt & 0xff,
+                (sns_v4l_pix_fmt >> 8) & 0xff,
+                (sns_v4l_pix_fmt >> 16) & 0xff,
+                (sns_v4l_pix_fmt >> 24) & 0xff,
+                bpp);
             return XCAM_RETURN_ERROR_PARAM;
     }
 
@@ -267,8 +284,25 @@ XCamReturn AiqCifSclStream_set_format2(AiqCifSclStream_t* pCifSclStrm,
         case V4L2_PIX_FMT_SRGGB16:
             pCifSclStrm->_sns_v4l_pix_fmt = V4L2_PIX_FMT_SRGGB16;
             break;
+        case V4L2_PIX_FMT_GREY:
+            pCifSclStrm->_sns_v4l_pix_fmt = V4L2_PIX_FMT_GREY;
+            break;
+        case V4L2_PIX_FMT_Y10:
+            pCifSclStrm->_sns_v4l_pix_fmt = V4L2_PIX_FMT_Y10;
+            break;
+        case V4L2_PIX_FMT_Y12:
+            pCifSclStrm->_sns_v4l_pix_fmt = V4L2_PIX_FMT_Y12;
+            break;
         default:
-            LOGE_CAMHW_SUBM(ISP20HW_SUBM, "unknown format");
+            LOGE_CAMHW_SUBM(
+                ISP20HW_SUBM,
+                "CIF set_format2 UNKNOWN pixfmt=0x%08x fourcc='%c%c%c%c' bpp=%d",
+                sns_v4l_pix_fmt,
+                sns_v4l_pix_fmt & 0xff,
+                (sns_v4l_pix_fmt >> 8) & 0xff,
+                (sns_v4l_pix_fmt >> 16) & 0xff,
+                (sns_v4l_pix_fmt >> 24) & 0xff,
+                bpp);
             return XCAM_RETURN_ERROR_PARAM;
     }
     return ret;
