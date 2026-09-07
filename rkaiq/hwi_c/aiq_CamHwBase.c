@@ -2009,40 +2009,51 @@ void AiqCamHwBase_deinit(AiqCamHwBase_t* pCamHw) {
     EXIT_CAMHW_FUNCTION();
 }
 
-static XCamReturn _pixFmt2Bpp(uint32_t pixFmt, int8_t bpp) {
+static XCamReturn _pixFmt2Bpp(uint32_t pixFmt, int8_t *bpp) {
     switch (pixFmt) {
         case V4L2_PIX_FMT_SBGGR8:
         case V4L2_PIX_FMT_SGBRG8:
         case V4L2_PIX_FMT_SGRBG8:
         case V4L2_PIX_FMT_SRGGB8:
-            bpp = 8;
+        case V4L2_PIX_FMT_GREY:
+            *bpp = 8;
             break;
         case V4L2_PIX_FMT_SBGGR10:
         case V4L2_PIX_FMT_SGBRG10:
         case V4L2_PIX_FMT_SGRBG10:
         case V4L2_PIX_FMT_SRGGB10:
-            bpp = 10;
+        case V4L2_PIX_FMT_Y10:
+            *bpp = 10;
             break;
         case V4L2_PIX_FMT_SBGGR12:
         case V4L2_PIX_FMT_SGBRG12:
         case V4L2_PIX_FMT_SGRBG12:
         case V4L2_PIX_FMT_SRGGB12:
-            bpp = 12;
+        case V4L2_PIX_FMT_Y12:
+            *bpp = 12;
             break;
         case V4L2_PIX_FMT_SBGGR14:
         case V4L2_PIX_FMT_SGBRG14:
         case V4L2_PIX_FMT_SGRBG14:
         case V4L2_PIX_FMT_SRGGB14:
-            bpp = 14;
+            *bpp = 14;
             break;
         case V4L2_PIX_FMT_SBGGR16:
         case V4L2_PIX_FMT_SGBRG16:
         case V4L2_PIX_FMT_SGRBG16:
         case V4L2_PIX_FMT_SRGGB16:
-            bpp = 16;
+            *bpp = 16;
             break;
         default:
-            LOGE_CAMHW_SUBM(ISP20HW_SUBM, "unknown format");
+            LOGE_CAMHW_SUBM(
+                ISP20HW_SUBM,
+                "_pixFmt2Bpp UNKNOWN pixFmt=0x%08x fourcc='%c%c%c%c' bpp_in=%d",
+                pixFmt,
+                pixFmt & 0xff,
+                (pixFmt >> 8) & 0xff,
+                (pixFmt >> 16) & 0xff,
+                (pixFmt >> 24) & 0xff,
+                bpp);
             return XCAM_RETURN_ERROR_PARAM;
     }
 
@@ -2059,7 +2070,13 @@ static XCamReturn _setupPipelineFmtCif(AiqCamHwBase_t* pCamHw,
     struct v4l2_subdev_selection aSelection;
     struct v4l2_subdev_format isp_src_fmt;
 
-    _pixFmt2Bpp(sns_v4l_pix_fmt, bpp);
+    ret = _pixFmt2Bpp(sns_v4l_pix_fmt, &bpp);
+    if (ret)
+    {
+        LOGE_CAMHW_SUBM(ISP20HW_SUBM,
+                        "pixFmt2Bpp failed: fmt=0x%08x", sns_v4l_pix_fmt);
+        return ret;
+    }
 
     if (g_mIsMultiIspMode && !pCamHw->mNoReadBack) {
         ret = AiqRawStreamCapUnit_set_csi_mem_word_big_align(
@@ -2192,7 +2209,12 @@ static XCamReturn _setupPipelineFmtIsp(AiqCamHwBase_t* pCamHw,
     // set scale fmt
     if (pCamHw->mCifScaleStream) {
         int8_t bpp = 0;
-        _pixFmt2Bpp(sns_v4l_pix_fmt, bpp);
+        ret = _pixFmt2Bpp(sns_v4l_pix_fmt, &bpp);
+        if (ret) {
+            LOGE_CAMHW_SUBM(ISP20HW_SUBM,
+                            "pixFmt2Bpp failed: fmt=0x%08x", sns_v4l_pix_fmt);
+            return ret;
+        }
         AiqCifSclStream_set_format2(pCamHw->mCifScaleStream, sns_sd_sel, sns_v4l_pix_fmt, bpp);
     }
 
