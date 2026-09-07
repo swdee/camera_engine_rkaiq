@@ -1,17 +1,13 @@
 
 # RKAIQ Camera Engine
 
-Two methods are provided on how to compile the RKAIQ Camera Engine
-
-1. Cross compile on x86 workstation
-2. Compile on ARM64 directly
-
+Instructions for compiling the RKAIQ Camera Engine.
 
 ## Cross Compile on x86 Workstation
 
 ### Compile 
 
-The following instructions are for compiling on Debain 13 (Trixie)
+The following instructions are for compiling on Debian 13 (Trixie)
 
 Install AArch64 cross compiler
 ```
@@ -54,7 +50,7 @@ Build
 ninja rkaiq rkaiq_3A_server
 ```
 
-### Deploy
+### Deploying
 
 After completing the compile steps above, deploy on the SBC.
 
@@ -82,6 +78,3 @@ Run the rkaiq_3A server.
 cd /home/radxa/rkaiq
 LD_LIBRARY_PATH=/home/radxa/rkaiq rkaiq_3A_server
 ```
-
-
-
