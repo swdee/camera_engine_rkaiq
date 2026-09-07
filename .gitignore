@@ -68,3 +68,5 @@ rkaiq/algos/awb/*.cpp
 rkaiq/algos/asd/*.cpp
 rkaiq/output/
 rkisp_demo/deps
+
+.idea
